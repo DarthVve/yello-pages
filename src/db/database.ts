@@ -12,6 +12,8 @@ export async function database() {
   try {
     const cluster = await mongoose.connect(MONGODB_URI, dbOptions);
     console.log(`MongoDB Cluster running on ${cluster.connection.port}`)
+    await cluster.connection.syncIndexes();
+    console.log("DB Collections Indexed")
     confirmSeed();
   } catch (err) {
     console.error("Error connecting to db: ", err);
