@@ -6,6 +6,7 @@ interface user {
   email: string;
   password: string;
   phoneNo: string;
+  avatar: string;
   role: string;
   verified: boolean;
 }
@@ -16,6 +17,7 @@ const UserSchema = new Schema<user>({
   email: { type: String, required: true, trim: true, unique: true },
   password: { type: String, required: true },
   phoneNo: { type: String, required: true, trim: true, unique: true },
+  avatar: { type: String, required: false, trim: true },
   role: { type: String, enum: ['admin', 'user', 'rep'], required: true, default: 'user' },
   verified: { type: Boolean, default: false }
 }, { timestamps: true });

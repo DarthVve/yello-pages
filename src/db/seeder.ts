@@ -16,6 +16,7 @@ export async function seedAdmin() {
     email: ROOT_ADMIN_EMAIL,
     password: ROOT_ADMIN_PASSWORD,
     phoneNo: ROOT_ADMIN_PHONE,
+    avatar: "https://res.cloudinary.com/dxqjyqz8p/image/upload/v1622021008/avatars/seed_admin_avatar.png",
     role: "admin",
     isVerified: true,
   });
