@@ -1,4 +1,4 @@
-import { Schema, model, ObjectId } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 type status = "open" | "closed";
 
@@ -7,8 +7,8 @@ interface issue {
   description: string;
   attachments: string[];
   status: status;
-  user: ObjectId;
-  business: ObjectId;
+  user: Types.ObjectId;
+  business: Types.ObjectId;
 }
 
 const IssueSchema = new Schema<issue>({
