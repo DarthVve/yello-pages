@@ -54,6 +54,4 @@ const BusinessSchema = new Schema<business>({
 
 const Business = model<business>("Business", BusinessSchema);
 
-Business.init();
-
 export default Business;

@@ -27,62 +27,52 @@ export async function seedAdmin() {
   });
 }
 
-export async function seedBusiness(user: Types.ObjectId) {
-  try {
-    const seed = await Business.create({
-      name: 'FooLimited',
-      services: ['bar'],
-      rcNumber: 'QWERTY123',
-      address: '123 Foo Street',
-      email: 'example@foo.org',
-      website: 'https://foo.org',
-      socialMedia:
-      {
-        facebook: 'https://facebook.com/foo',
-        twitter: 'https://twitter.com/foo',
-        instagram: 'https://instagram.com/foo',
-        linkedin: 'https://linkedin.com/foo',
-        youtube: 'https://youtube.com/foo'
-      },
-      phones: ['+2341234567890', '+2341234567891'],
-      verified: true,
-      rep: user
-    });
-    console.log('Business seeded')
-    await seedIssue(user, seed._id);
-  } catch (err) {
-    console.log(err);
-  }
-}
+// export async function seedBusiness(user: Types.ObjectId) {
+//   try {
+//     const seed = await Business.create({
+//       name: 'FooLimited',
+//       services: ['bar'],
+//       rcNumber: 'QWERTY123',
+//       address: '123 Foo Street',
+//       email: 'example@foo.org',
+//       website: 'https://foo.org',
+//       socialMedia:
+//       {
+//         facebook: 'https://facebook.com/foo',
+//         twitter: 'https://twitter.com/foo',
+//         instagram: 'https://instagram.com/foo',
+//         linkedin: 'https://linkedin.com/foo',
+//         youtube: 'https://youtube.com/foo'
+//       },
+//       phones: ['+2341234567890', '+2341234567891'],
+//       verified: true,
+//       rep: user
+//     });
+//     console.log('Business seeded')
+//     await seedIssue(user, seed._id);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
-export async function seedIssue(user?: Types.ObjectId, business?: Types.ObjectId) {
-  const seed = new Issue({
-    title: "Test",
-    description: "this is a test",
-    attachments: "https://google.com",
-    status: "open",
-    user: user,
-    business: business
-  });
-  await seed.save()
-  console.log('Issue seeded')
-}
+// export async function seedIssue(user?: Types.ObjectId, business?: Types.ObjectId) {
+//   const seed = new Issue({
+//     title: "Test",
+//     description: "this is a test",
+//     attachments: "https://google.com",
+//     status: "open",
+//     user: user,
+//     business: business
+//   });
+//   await seed.save()
+//   console.log('Issue seeded')
+// }
 
 export async function confirmSeed() {
   const admin = await User.findOne({ email: ROOT_ADMIN_EMAIL });
   if (!admin) {
     try {
-      // await User.init();
       seedAdmin();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  if (admin?.id) {
-    try {
-      // await Issue.init();
-      // await Business.init();
-      seedBusiness(admin.id);
     } catch (err) {
       console.log(err);
     }
