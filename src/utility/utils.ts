@@ -25,6 +25,7 @@ export const generateToken = (user: { [key: string]: unknown }, time: string = '
 export const signUpValidation = Joi.object().keys({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
+  username: Joi.string().required(),
   email: Joi.string().email().required(),
   phoneNo: Joi.string().required(),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
