@@ -2,6 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { signUpValidation, loginValidation, generateToken, options, updateUserSchema } from '../utility/utils';
 import User from '../model/user';
 import bcrypt from 'bcryptjs';
+import axios from 'axios';
+const APP_ID = process.env.IDENTITY_PASS_APP_ID as string;
+const API_KEY = process.env.IDENTITY_PASS_API_KEY as string;
+const BASE_URL = process.env.IDENTITY_PASS_BASE_URL as string;
+
 
 //Create a new user
 export async function signupUser(req: Request, res: Response) {
@@ -276,3 +281,86 @@ export async function logoutUser(req: Request, res: Response) {
     res.status(500).json({ msg: 'failed to logout', route: '/user/logout' });
   }
 };
+
+
+//User Verification, KYC
+export async function verifyUser(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({ _id: id });
+    if (!user) { return res.status(404).json({ msg: 'User not found' }) };
+    const { BVN, NIN, DLNo, IPNo } = req.body;
+
+    if (BVN) {
+      const data = { number: "54651333604" };
+      const bvnVerify = await axios.post(`${BASE_URL}/api/v2/biometrics/merchant/data/verification/bvn`, data, {
+        headers: {
+          'x-api-key': API_KEY,
+          'app-id': APP_ID
+        }
+      })
+      console.log(bvnVerify)
+
+      if (bvnVerify.status === 200) {
+        await user.updateOne({
+          kyc: true
+        });
+      }
+    };
+
+    if (NIN) {
+      const testImage = "https://asset.cloudinary.com/dh3i1wodq/089761016db6dab086ca450bf2465898"
+      const data = { image: testImage };
+      const ninVerify = await axios.post(`${BASE_URL}/api/v2/biometrics/merchant/data/verification/nin/image`, data, {
+        headers: {
+          'x-api-key': API_KEY,
+          'app-id': APP_ID
+        }
+      })
+      console.log(ninVerify)
+
+      if (ninVerify.status === 200) {
+        await user.updateOne({
+          kyc: true
+        });
+      }
+    };
+
+    if (DLNo) {
+      const data = { number: 'AAD23208212298', dob: '1999-12-21' };
+      const dlVerify = await axios.post(`${BASE_URL}/api/v1/biometrics/merchant/data/verification/drivers_license`, data, {
+        headers: {
+          'x-api-key': API_KEY,
+          'app-id': APP_ID
+        }
+      })
+      console.log(dlVerify)
+
+      if (dlVerify.status === 200) {
+        await user.updateOne({
+          kyc: true
+        });
+      }
+    };
+
+    if (IPNo) {
+      const data = { number: 'A00400000', last_name: 'test' };
+      const ipVerify = await axios.post(`${BASE_URL}/api/v2/biometrics/merchant/data/verification/national_passport`, data, {
+        headers: {
+          'x-api-key': API_KEY,
+          'app-id': APP_ID
+        }
+      })
+      console.log(ipVerify)
+
+      if (ipVerify.status === 200) {
+        await user.updateOne({
+          kyc: true
+        });
+      }
+    };
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'failed to verify user', route: '/user/verify' });
+  }
+}

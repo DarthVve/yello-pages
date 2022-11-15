@@ -10,6 +10,7 @@ interface user {
   avatar: string;
   role: string;
   verified: boolean;
+  kyc: boolean;
   password: string;
 }
 
@@ -22,6 +23,7 @@ const UserSchema = new Schema<user>({
   avatar: { type: String, required: false, trim: true },
   role: { type: String, enum: ['admin', 'user', 'rep'], required: true, default: 'user' },
   verified: { type: Boolean, default: false },
+  kyc: { type: Boolean, default: false },
   password: { type: String, required: true }
 }, { timestamps: true });
 
