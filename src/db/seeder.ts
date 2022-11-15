@@ -20,7 +20,8 @@ export async function seedAdmin() {
     phoneNo: ROOT_ADMIN_PHONE,
     avatar: "https://res.cloudinary.com/dxqjyqz8p/image/upload/v1622021008/avatars/seed_admin_avatar.png",
     role: "admin",
-    isVerified: true,
+    verified: true,
+    kyc: true
   });
 
   seed.save().then(() => {
