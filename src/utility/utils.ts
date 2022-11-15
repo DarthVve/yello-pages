@@ -15,7 +15,7 @@ export const options = {
 
 //Token Generator function for login sessions
 export const generateToken = (user: { [key: string]: unknown }, time: string = '7d'): unknown => {
-  const pass = process.env.JWT_SECRET as string;
+  const pass = `${process.env.JWT_SECRET}` as string;
   return jwt.sign(user, pass, { expiresIn: time });
 };
 
@@ -27,7 +27,7 @@ export const signUpValidation = Joi.object().keys({
   lastName: Joi.string().required(),
   username: Joi.string().required(),
   email: Joi.string().email().required(),
-  phoneNo: Joi.string().required(),
+  phoneNo: Joi.string().regex(/^[0-9]{11}$/).required(),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
   confirmPassword: Joi.string().valid(Joi.ref('password')).required()
 }).with('password', 'confirmPassword');
@@ -35,15 +35,15 @@ export const signUpValidation = Joi.object().keys({
 
 //User Sign In Schema
 export const loginValidation = Joi.object().keys({
-  emailOrUsername: Joi.string().trim().required(),
+  email: Joi.string().trim().required(),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 });
 
 
 //update User profile
 export const updateUserSchema = Joi.object().keys({
-  firstname: Joi.string(),
-  lastname: Joi.string(),
-  phonenumber: Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
+  firstName: Joi.string(),
+  lastName: Joi.string(),
+  phoneNo: Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
   avatar: Joi.string()
 });

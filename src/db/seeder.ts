@@ -8,11 +8,13 @@ const ROOT_ADMIN_PASSWORD = process.env.ROOT_ADMIN_PASSWORD as string;
 const ROOT_ADMIN_FIRST_NAME = process.env.ROOT_ADMIN_FIRST_NAME as string;
 const ROOT_ADMIN_LAST_NAME = process.env.ROOT_ADMIN_LAST_NAME as string;
 const ROOT_ADMIN_PHONE = process.env.ROOT_ADMIN_PHONE as string;
+const ROOT_ADMIN_USERNAME = process.env.ROOT_ADMIN_USERNAME as string;
 
 export async function seedAdmin() {
   const seed = new User({
     firstName: ROOT_ADMIN_FIRST_NAME,
     lastName: ROOT_ADMIN_LAST_NAME,
+    username: ROOT_ADMIN_USERNAME,
     email: ROOT_ADMIN_EMAIL,
     password: ROOT_ADMIN_PASSWORD,
     phoneNo: ROOT_ADMIN_PHONE,

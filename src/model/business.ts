@@ -1,13 +1,13 @@
 import { Schema, model, Types } from "mongoose";
 
 interface socialMedia {
-  facebook?: string;
-  twitter?: string;
-  instagram?: string;
-  linkedin?: string;
-  youtube?: string;
-  pinterest?: string;
-  snapchat?: string;
+  facebook: string;
+  twitter: string;
+  instagram: string;
+  linkedin: string;
+  youtube: string;
+  pinterest: string;
+  snapchat: string;
 }
 
 interface business {
@@ -36,7 +36,7 @@ const SocialMediaSchema = new Schema<socialMedia>({
   youtube: { type: String, required: false, trim: true },
   pinterest: { type: String, required: false, trim: true },
   snapchat: { type: String, required: false, trim: true }
-}, { _id : false })
+}, { _id: false })
 
 const BusinessSchema = new Schema<business>({
   name: { type: String, required: true, unique: true, trim: true },
