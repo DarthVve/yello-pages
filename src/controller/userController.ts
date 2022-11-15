@@ -299,12 +299,14 @@ export async function verifyUser(req: Request, res: Response) {
           'app-id': APP_ID
         }
       })
-      console.log(bvnVerify)
 
-      if (bvnVerify.status === 200) {
+      if (bvnVerify.data.status === true && bvnVerify.data.detail === 'Verification Successful') {
         await user.updateOne({
           kyc: true
         });
+        return res.status(200).json({ msg: 'BVN Verifcation Successful, User is now Verified' });
+      } else {
+        return res.status(406).json({ msg: 'BVN Verification Failed' });
       }
     };
 
@@ -317,12 +319,14 @@ export async function verifyUser(req: Request, res: Response) {
           'app-id': APP_ID
         }
       })
-      console.log(ninVerify)
 
-      if (ninVerify.status === 200) {
+      if (ninVerify.data.status === true && ninVerify.data.detail === 'Verification Successful') {
         await user.updateOne({
           kyc: true
         });
+        return res.status(200).json({ msg: 'NIN Verifcation Successful, User is now Verified' });
+      } else {
+        return res.status(406).json({ msg: 'NIN Verification Failed' });
       }
     };
 
@@ -334,12 +338,14 @@ export async function verifyUser(req: Request, res: Response) {
           'app-id': APP_ID
         }
       })
-      console.log(dlVerify)
 
-      if (dlVerify.status === 200) {
+      if (dlVerify.data.status === true && dlVerify.data.detail === 'DL Verification Successful') {
         await user.updateOne({
           kyc: true
         });
+        return res.status(200).json({ msg: 'Drivers License Verifcation Successful, User is now Verified' });
+      } else {
+        res.status(406).json({ msg: 'Drivers License Verification Failed' });
       }
     };
 
@@ -351,16 +357,19 @@ export async function verifyUser(req: Request, res: Response) {
           'app-id': APP_ID
         }
       })
-      console.log(ipVerify)
 
-      if (ipVerify.status === 200) {
+      if (ipVerify.data.status === true && ipVerify.data.detail === 'Verification Successfull') {
         await user.updateOne({
           kyc: true
         });
+        return res.status(200).json({ msg: 'International Passport Verifcation Successful, User is now Verified' });
+      } else {
+        res.status(406).json({ msg: 'International Passport Verification Failed' });
       }
+
     };
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'failed to verify user', route: '/user/verify' });
   }
-}
+};

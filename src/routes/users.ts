@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  signupUser, loginUser, resetPassword, updateUsers, logoutUser/*, setResetToken, verifyUser, forgotPassword, resendVerificationEmail*/
+  signupUser, loginUser, resetPassword, updateUsers, logoutUser, verifyUser/*, setResetToken, verifyUser, forgotPassword, resendVerificationEmail*/
 } from '../controller/userController';
 import { auth, oneTimeTokenAuth } from '../middleware/auth';
 const router = Router();
@@ -14,6 +14,7 @@ router.post('/login', loginUser);
 //router.patch('/resetPassword/:id', oneTimeTokenAuth, resetPassword);
 router.patch('/update/:id', auth, updateUsers);
 router.get('/logout', logoutUser)
+router.post('/kyc/:id', auth, verifyUser);
 
 
 export default router;
