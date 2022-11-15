@@ -344,8 +344,8 @@ export async function verifyUser(req: Request, res: Response) {
     };
 
     if (IPNo) {
-      const data = { number: 'A00400000', last_name: 'test' };
-      const ipVerify = await axios.post(`${BASE_URL}/api/v2/biometrics/merchant/data/verification/national_passport`, data, {
+      const data = { number: 'A00400000', first_name: "test", last_name: 'test', dob: '1999-12-21' };
+      const ipVerify = await axios.post(`${BASE_URL}/api/v1/biometrics/merchant/data/verification/national_passport`, data, {
         headers: {
           'x-api-key': API_KEY,
           'app-id': APP_ID
