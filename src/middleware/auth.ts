@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verify } from 'jsonwebtoken';
 import User from "../model/user";
 import bcrypt from 'bcryptjs';
+import Business from "../model/business";
 //import { isValid2FA } from "../utility/twoFactorAuth";
 
 const secret = process.env.JWT_SECRET as string;
@@ -20,9 +21,15 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
     }
 
     const { id } = verified as { [key: string]: string };
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findOne({ id });
     if (!user) {
-      return res.status(401).json({ msg: "User could not be identified" });
+      const business = await Business.findOne({ id });
+      if (!business) {
+        return res.status(401).json({ msg: "User could not be identified" });
+      } else {
+        req.business = id
+        return next();
+      }
     }
 
     //req.role = user.role;

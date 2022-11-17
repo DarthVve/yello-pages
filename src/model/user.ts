@@ -24,7 +24,7 @@ const UserSchema = new Schema<user>({
   role: { type: String, enum: ['admin', 'user', 'rep'], required: true, default: 'user' },
   verified: { type: Boolean, default: false },
   kyc: { type: Boolean, default: false },
-  password: { type: String, required: true }
+  password: { type: String, required: true, select: false }
 }, { timestamps: true });
 
 const User = model<user>("User", UserSchema);
