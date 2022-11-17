@@ -3,6 +3,7 @@ import { signUpValidation, loginValidation, generateToken, options, updateUserSc
 import User from '../model/user';
 import bcrypt from 'bcryptjs';
 import axios from 'axios';
+import Business from "../model/business";
 const APP_ID = process.env.IDENTITY_PASS_APP_ID as string;
 const API_KEY = process.env.IDENTITY_PASS_API_KEY as string;
 const BASE_URL = process.env.IDENTITY_PASS_BASE_URL as string;
@@ -109,9 +110,9 @@ export async function loginUser(req: Request, res: Response) {
       return res.status(400).json({ Error: validation.error.details[0].message });
     }
 
-    const user = await User.findOne({ email: req.body.email });
-
-    if (!user) { return res.status(404).json({ msg: 'User not found' }) };
+    let user = await User.findOne({ email: req.body.email });
+    if (!user) { user = await Business.findOne({ email: req.body.email }) }
+    if (!user) { return res.status(404).json({ msg: 'User not found' }) }
 
     const validPass = await bcrypt.compare(req.body.password, user.password);
 
@@ -122,14 +123,7 @@ export async function loginUser(req: Request, res: Response) {
         return res.status(401).json({ msg: 'Your account has not been verified' });
       }
 
-      const id = user._id;
-      const firstName = user.firstName;
-      const lastName = user.lastName;
-      const username = user.username;
-      const email = user.email;
-      const phoneNo = user.phoneNo;
-      const role = user.role;
-      const userInfo = { id, email, firstName, lastName, username, phoneNo, role };
+      const userInfo = {...user, password: null };
 
       const token = generateToken({ id: user._id });
       const production = process.env.NODE_ENV === "production";

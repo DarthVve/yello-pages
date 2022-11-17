@@ -16,12 +16,16 @@ interface business {
   rcNumber: string;
   address: string;
   email: string;
+  password: string;
   website: string;
   socialMedia: socialMedia;
+  logo: string;
   phones: string[];
   verified: boolean;
-  rating?: number;
-  rep: Types.ObjectId;
+  cacVerified: boolean;
+  rating: number;
+  noOfRatings: number;
+  reps: [Types.ObjectId];
 }
 
 function nonEmpty(arr: string[]) {
@@ -41,15 +45,19 @@ const SocialMediaSchema = new Schema<socialMedia>({
 const BusinessSchema = new Schema<business>({
   name: { type: String, required: true, unique: true, trim: true },
   services: { type: [String], required: true, validate: [nonEmpty, 'There must be at least one service'] },
-  rcNumber: { type: String, required: true, unique: true, trim: true },
+  rcNumber: { type: String, required: false, unique: true, trim: true },
   address: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true },
-  website: { type: String, unique: true, trim: true },
-  socialMedia: SocialMediaSchema,
+  password: { type: String, required: true, select: false },
+  website: { type: String, required: false, unique: true, trim: true },
+  socialMedia: { type: SocialMediaSchema, required: false },
+  logo: { type: String, required: false },
   phones: { type: [String], validate: [nonEmpty, 'There must be at least one phone number'] },
   verified: { type: Boolean, default: false },
-  rating: { type: Number, min: 0, max: 100, required: false },
-  rep: { type: Schema.Types.ObjectId, ref: "User", required: true }
+  cacVerified: { type: Boolean, default: false },
+  rating: { type: Number, min: 0, max: 100, default: 0 },
+  noOfRatings: { type: Number, default: 0},
+  reps: { type: [Schema.Types.ObjectId], ref: "User", required: false }
 }, { timestamps: true });
 
 const Business = model<business>("Business", BusinessSchema);
