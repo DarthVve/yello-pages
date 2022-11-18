@@ -48,7 +48,7 @@ const BusinessSchema = new Schema<business>({
   rcNumber: { type: String, required: false, unique: true, trim: true },
   address: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true },
-  password: { type: String, required: true, select: false },
+  password: { type: String, required: true },
   website: { type: String, required: false, unique: true, trim: true },
   socialMedia: { type: SocialMediaSchema, required: false },
   logo: { type: String, required: false },
@@ -56,7 +56,7 @@ const BusinessSchema = new Schema<business>({
   verified: { type: Boolean, default: false },
   cacVerified: { type: Boolean, default: false },
   rating: { type: Number, min: 0, max: 100, default: 0 },
-  noOfRatings: { type: Number, default: 0},
+  noOfRatings: { type: Number, default: 0 },
   reps: { type: [Schema.Types.ObjectId], ref: "User", required: false }
 }, { timestamps: true });
 

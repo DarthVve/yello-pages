@@ -3,7 +3,7 @@ import { signUpValidation, loginValidation, generateToken, options, updateUserSc
 import User from '../model/user';
 import bcrypt from 'bcryptjs';
 import axios from 'axios';
-import Business from "../model/business";
+import Business from '../model/business';
 const APP_ID = process.env.IDENTITY_PASS_APP_ID as string;
 const API_KEY = process.env.IDENTITY_PASS_API_KEY as string;
 const BASE_URL = process.env.IDENTITY_PASS_BASE_URL as string;
@@ -110,33 +110,84 @@ export async function loginUser(req: Request, res: Response) {
       return res.status(400).json({ Error: validation.error.details[0].message });
     }
 
-    let user = await User.findOne({ email: req.body.email });
-    if (!user) { user = await Business.findOne({ email: req.body.email }) }
-    if (!user) { return res.status(404).json({ msg: 'User not found' }) }
+    const user = await User.findOne({ email: req.body.email });
+    const business = await Business.findOne({ email: req.body.email });
+    if (!user && !business) { return res.status(404).json({ msg: 'User not found' }) };
 
-    const validPass = await bcrypt.compare(req.body.password, user.password);
+    if (user) {
+      const validPass = await bcrypt.compare(req.body.password, user.password);
 
-    if (!validPass) {
-      res.status(401).json({ msg: "Invalid email or password" });
-    } else {
-      if (user.verified == false) {
-        return res.status(401).json({ msg: 'Your account has not been verified' });
-      }
+      if (!validPass) {
+        res.status(401).json({ msg: "Invalid email or password" });
+      } else {
+        if (user.verified == false) {
+          return res.status(401).json({ msg: 'Your account has not been verified' });
+        }
 
-      const userInfo = {...user, password: null };
+        const userInfo = {
+          id: user._id,
+          email: user.email,
+          firstname: user.firstName,
+          lastname: user.lastName,
+          username: user.username,
+          phoneNo: user.phoneNo,
+          role: user.role,
+          kyc: user.kyc
+        };
 
-      const token = generateToken({ id: user._id });
-      const production = process.env.NODE_ENV === "production";
+        const token = generateToken({ id: user._id });
+        const production = process.env.NODE_ENV === "production";
 
-      return res.status(200).cookie("token", token, {
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: production,
-        sameSite: production ? "none" : "lax"
-      }).json({
-        msg: 'You have successfully logged in',
-        userInfo
-      });
+        return res.status(200).cookie("token", token, {
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          secure: production,
+          sameSite: production ? "none" : "lax"
+        }).json({
+          msg: `Welcome to Yello Pages ${user.username}`,
+          userInfo
+        })
+      };
+
+    } else if (business) {
+      const validPass = await bcrypt.compare(req.body.password, business.password);
+
+      if (!validPass) {
+        res.status(401).json({ msg: "Invalid email or password" });
+      } else {
+        if (business.verified == false) {
+          return res.status(401).json({ msg: 'Your account has not been verified' });
+        }
+
+        const businessInfo = {
+          id: business._id,
+          logo: business.logo,
+          name: business.name,
+          email: business.email,
+          website: business.website,
+          address: business.address,
+          phoneNo: business.phones,
+          socialMedia: business.socialMedia,
+          services: business.services,
+          rating: business.rating,
+          noOfRatings: business.noOfRatings,
+          verified: business.verified,
+          cacVerified: business.cacVerified,
+        };
+
+        const token = generateToken({ id: business._id });
+        const production = process.env.NODE_ENV === "production";
+
+        return res.status(200).cookie("token", token, {
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          secure: production,
+          sameSite: production ? "none" : "lax"
+        }).json({
+          msg: `Welcome to Yello Pages ${business.name}`,
+          businessInfo
+        })
+      };
     }
   } catch (err) {
     console.log(err)
